@@ -69,7 +69,6 @@ app.use(
 );
 
 app.use(express.json({ limit: "100kb" }));
-
 app.use(apiLimiter);
 
 // =====================================
@@ -197,10 +196,10 @@ app.get("/", (req, res) => {
 });
 
 // =====================================
-// ADD BOOK
+// 1. POST /books - ADD BOOK
 // =====================================
 
-app.post("/add-book", verifyToken, async (req, res) => {
+app.post("/books", verifyToken, async (req, res) => {
   try {
     if (!validBookData(req.body)) {
       return res.status(400).send({
@@ -248,7 +247,7 @@ app.post("/add-book", verifyToken, async (req, res) => {
 });
 
 // =====================================
-// GET ALL BOOKS
+// 2. GET /books - GET ALL BOOKS
 // =====================================
 
 app.get("/books", async (req, res) => {
@@ -269,7 +268,7 @@ app.get("/books", async (req, res) => {
 });
 
 // =====================================
-// GET SINGLE BOOK
+// 3. GET /books/:id - GET SINGLE BOOK
 // =====================================
 
 app.get("/books/:id", async (req, res) => {
@@ -303,7 +302,8 @@ app.get("/books/:id", async (req, res) => {
 });
 
 // =====================================
-// MY BOOKS
+// EXTRA: GET /my-books
+// GET LOGGED-IN USER'S BOOKS
 // =====================================
 
 app.get("/my-books", verifyToken, async (req, res) => {
@@ -326,10 +326,10 @@ app.get("/my-books", verifyToken, async (req, res) => {
 });
 
 // =====================================
-// UPDATE MY BOOK
+// 4. PATCH /books/:id - UPDATE BOOK
 // =====================================
 
-app.put("/my-books/:id", verifyToken, async (req, res) => {
+app.patch("/books/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -419,10 +419,10 @@ app.put("/my-books/:id", verifyToken, async (req, res) => {
 });
 
 // =====================================
-// DELETE MY BOOK
+// 5. DELETE /books/:id - DELETE BOOK
 // =====================================
 
-app.delete("/my-books/:id", verifyToken, async (req, res) => {
+app.delete("/books/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -474,10 +474,10 @@ app.delete("/my-books/:id", verifyToken, async (req, res) => {
 });
 
 // =====================================
-// BORROW BOOK - TRANSACTION
+// 6. POST /borrows - BORROW BOOK
 // =====================================
 
-app.post("/borrow", verifyToken, async (req, res) => {
+app.post("/borrows", verifyToken, async (req, res) => {
   const session = client.startSession();
 
   try {
@@ -589,10 +589,10 @@ app.post("/borrow", verifyToken, async (req, res) => {
 });
 
 // =====================================
-// MY BORROWED BOOKS
+// 7. GET /borrows - GET MY BORROWED BOOKS
 // =====================================
 
-app.get("/my-borrows", verifyToken, async (req, res) => {
+app.get("/borrows", verifyToken, async (req, res) => {
   try {
     const borrowings = await borrowingsCollection
       .find({
@@ -613,10 +613,10 @@ app.get("/my-borrows", verifyToken, async (req, res) => {
 });
 
 // =====================================
-// RETURN BOOK - TRANSACTION
+// 8. DELETE /borrows/:id - RETURN BOOK
 // =====================================
 
-app.patch("/return/:id", verifyToken, async (req, res) => {
+app.delete("/borrows/:id", verifyToken, async (req, res) => {
   const session = client.startSession();
 
   try {
